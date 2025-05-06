@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
-
+    'rest_framework_simplejwt',
     'posts',
 ]
 
@@ -81,9 +82,11 @@ WSGI_APPLICATION = 'social_network.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dj_diplom',
-        'USER': 'adilet',
+        'NAME': 'spd-diplom',
+        'USER': 'postgres',
         'PASSWORD': '1',
+        'HOST': "localhost",
+        "PORT": 5432
     }
 }
 
@@ -125,6 +128,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 # настройте STATIC_ROOT, MEDIA_URL и MEDIA_ROOT
 
+# Медиа-настройки
+MEDIA_URL = '/media/'       # Адрес относительный (будет доступен через /media/)
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Абсолютный путь к папке на диске
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -133,6 +140,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.TokenAuthentication',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
